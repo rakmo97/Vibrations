@@ -1,0 +1,14 @@
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp: In member function ‘virtual void dolfin::dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const’:
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp:66:85: error: invalid operands of types ‘double’ and ‘void*’ to binary ‘operator*’
+           values[1] = x[0] >= 0.48*l && x[0] <= 52 && near(x[1],w) && x[2] >= 0.3*h *&& x[2] <= 0.7*h? A : 0.0;
+                                                                               ~~~~~~^~~~~
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp:66:89: error: label ‘x’ used but not defined
+           values[1] = x[0] >= 0.48*l && x[0] <= 52 && near(x[1],w) && x[2] >= 0.3*h *&& x[2] <= 0.7*h? A : 0.0;
+                                                                                         ^
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp: In member function ‘virtual double dolfin::dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2::get_property(std::__cxx11::string) const’:
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp:79:11: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "h") return h;          if (name == "A") return A;
+           ^~
+/tmp/tmp7_ry0kv4/dolfin_expression_eabba84bf9e86c709c78a9b796ca8bf2.cpp:79:47: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "h") return h;          if (name == "A") return A;
+                                               ^~

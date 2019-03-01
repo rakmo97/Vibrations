@@ -1,0 +1,8 @@
+/tmp/tmp9m80r2pv/dolfin_subdomain_1b344174fb31bc669d788863c4679008.cpp: In member function ‘virtual bool dolfin::dolfin_subdomain_1b344174fb31bc669d788863c4679008::inside(Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, bool) const’:
+/tmp/tmp9m80r2pv/dolfin_subdomain_1b344174fb31bc669d788863c4679008.cpp:63:27: error: ‘tol’ was not declared in this scope
+          return near(x[0],tol);
+                           ^~~
+/tmp/tmp9m80r2pv/dolfin_subdomain_1b344174fb31bc669d788863c4679008.cpp:63:27: note: suggested alternative: ‘atol’
+          return near(x[0],tol);
+                           ^~~
+                           atol

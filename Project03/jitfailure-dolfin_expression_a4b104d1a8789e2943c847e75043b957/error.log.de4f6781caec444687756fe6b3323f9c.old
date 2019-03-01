@@ -1,0 +1,15 @@
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp: In member function ‘virtual void dolfin::dolfin_expression_a4b104d1a8789e2943c847e75043b957::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const’:
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp:66:67: error: ‘tol’ was not declared in this scope
+           values[1] = x[0] >= 0.48*l && x[0] <= 52 && near(x[1],w,tol) && x[2] >= 0.3*h && x[2] <= 0.7*h? A : 0.0;
+                                                                   ^~~
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp:66:67: note: suggested alternative: ‘atol’
+           values[1] = x[0] >= 0.48*l && x[0] <= 52 && near(x[1],w,tol) && x[2] >= 0.3*h && x[2] <= 0.7*h? A : 0.0;
+                                                                   ^~~
+                                                                   atol
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp: In member function ‘virtual double dolfin::dolfin_expression_a4b104d1a8789e2943c847e75043b957::get_property(std::__cxx11::string) const’:
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp:79:11: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "h") return h;          if (name == "A") return A;
+           ^~
+/tmp/tmpvhpv5d7e/dolfin_expression_a4b104d1a8789e2943c847e75043b957.cpp:79:47: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "h") return h;          if (name == "A") return A;
+                                               ^~

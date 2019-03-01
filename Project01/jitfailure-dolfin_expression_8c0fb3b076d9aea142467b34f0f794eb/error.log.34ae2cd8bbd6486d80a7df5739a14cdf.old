@@ -1,0 +1,4 @@
+/tmp/tmptrj7ijc0/dolfin_expression_8c0fb3b076d9aea142467b34f0f794eb.cpp: In member function ‘virtual void dolfin::dolfin_expression_8c0fb3b076d9aea142467b34f0f794eb::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const’:
+/tmp/tmptrj7ijc0/dolfin_expression_8c0fb3b076d9aea142467b34f0f794eb.cpp:61:24: error: no match for ‘operator^’ (operand types are ‘Eigen::Ref<const Eigen::Matrix<double, -1, 1> >’ and ‘int’)
+           values[0] = x^3;
+                       ~^~

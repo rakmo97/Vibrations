@@ -1,0 +1,8 @@
+/tmp/tmpxznv9vwa/dolfin_subdomain_d64aa417dad129e9c1dff414f8951bde.cpp: In member function ‘virtual bool dolfin::dolfin_subdomain_d64aa417dad129e9c1dff414f8951bde::inside(Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, bool) const’:
+/tmp/tmpxznv9vwa/dolfin_subdomain_d64aa417dad129e9c1dff414f8951bde.cpp:63:22: error: ‘l_nd’ was not declared in this scope
+          return near(l_nd,0);
+                      ^~~~
+/tmp/tmpxznv9vwa/dolfin_subdomain_d64aa417dad129e9c1dff414f8951bde.cpp:63:22: note: suggested alternative: ‘rand’
+          return near(l_nd,0);
+                      ^~~~
+                      rand

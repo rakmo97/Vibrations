@@ -1,0 +1,4 @@
+/tmp/tmpsn44uve_/dolfin_subdomain_d54a546c2fb59ae69044ad63ed314905.cpp: In member function ‘virtual bool dolfin::dolfin_subdomain_d54a546c2fb59ae69044ad63ed314905::inside(Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, bool) const’:
+/tmp/tmpsn44uve_/dolfin_subdomain_d54a546c2fb59ae69044ad63ed314905.cpp:63:27: error: ‘L’ was not declared in this scope
+          return near(x[0],L);
+                           ^

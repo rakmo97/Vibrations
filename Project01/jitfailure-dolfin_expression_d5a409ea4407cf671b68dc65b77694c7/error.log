@@ -1,0 +1,4 @@
+/tmp/tmpo972kxgt/dolfin_expression_d5a409ea4407cf671b68dc65b77694c7.cpp: In member function ‘virtual void dolfin::dolfin_expression_d5a409ea4407cf671b68dc65b77694c7::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const’:
+/tmp/tmpo972kxgt/dolfin_expression_d5a409ea4407cf671b68dc65b77694c7.cpp:61:27: error: cannot convert ‘const Eigen::Product<Eigen::Product<Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, 0>, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >, 0>’ to ‘Eigen::DenseCoeffsBase<Eigen::Ref<Eigen::Matrix<double, -1, 1> >, 1>::Scalar {aka double}’ in assignment
+           values[0] = x*x*x;
+                           ^
