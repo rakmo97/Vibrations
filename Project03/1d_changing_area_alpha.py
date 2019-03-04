@@ -30,7 +30,7 @@ print("alpha = ",alpha)
 W = alpha * W1
 
 a = 0.04*length;
-b = 0.4*length;
+b = 0.4*H;
 area = a*b;
 
 F = -100
@@ -107,7 +107,7 @@ for i in range(len(alpha)):
 	d = u_init.geometric_dimension()
 	v = TestFunction(V)
 	f = Constant((0.0,0.0,0.0))
-	T_init = Expression(('0.0', 'x[0] >= 0.48*l && x[0] <= 52 && near(x[1],w) && x[2] >= 0.3*h && x[2] <= 0.7*h? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd,h=h_nd, A=traction_nd)
+	T_init = Expression(('0.0', 'x[0] >= 0.48*l && x[0] <= .52*l && near(x[1],w) && x[2] >= 0.3*h && x[2] <= 0.7*h? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd,h=h_nd, A=traction_nd)
 	F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 	a_init, L_init = lhs(F_init), rhs(F_init)
 
