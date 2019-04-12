@@ -1,7 +1,13 @@
+
 from __future__ import print_function
 from fenics import *
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from ufl import nabla_div
 import math
+import numpy as np
+from scipy.signal import argrelextrema
 
 #==============================================================
 #	Dimensional parameters
@@ -23,15 +29,15 @@ traction_applied = -1e4
 youngs = (mu*(3.0*lambda_+2.0*mu))/(lambda_+mu)
 bar_speed = math.sqrt(youngs/rho)
 
-l_nd = length/length
-w_nd = W/length
-h_nd = H/length
+l_nd = length#/length
+w_nd = W#/length
+h_nd = H#/length
 
 t_char = length/bar_speed
 t = 0
 t_i = 0.5
 dt = 0.1
-num_steps = 500
+num_steps = 1000
 
 mu_nd = mu/youngs
 lambda_nd = lambda_/youngs
@@ -94,11 +100,16 @@ xdmffile_s = XDMFFile('results/stress.xdmf')
 
 u = Function(V)
 
+u_store = [0] * num_steps
+time = [0] * num_steps
+
 index = 0
 for n in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
-	solve(a == L, u, bc_left)
+	solve(a == L, u, [bc_left])
+	u_grab = u(0.5,0.1,0.1)
+	u_store[n] = u_grab[1]
 
 	if(abs(t-index)<0.01):
 		print("Writing output files...")
@@ -108,6 +119,13 @@ for n in range(num_steps):
 		xdmffile_s.write(project(stress,W),t)
 		index += 1
 
+	time[n] = t
 	t+=dt
 	u_n_1.assign(u_n)
 	u_n.assign(u)
+
+plt.figure(1)
+plt.plot(time,u_store)
+plt.xlabel('time [s]')
+plt.ylabel('Vertical Deflection [m]')
+plt.savefig('1cfig.png')

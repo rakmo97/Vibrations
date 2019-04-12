@@ -1,0 +1,11 @@
+/tmp/tmpocwzdarm/dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4.cpp: In member function ‘virtual void dolfin::dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4::eval(Eigen::Ref<Eigen::Matrix<double, -1, 1> >, Eigen::Ref<const Eigen::Matrix<double, -1, 1> >) const’:
+/tmp/tmpocwzdarm/dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4.cpp:65:48: error: expected ‘;’ before ‘x’
+           values[0] = x[0]<0.4*l && x[0]>0.6*l x[1]<0.4*w && x[1]>0.6*w ? mu_l_nd:mu_r_nd;
+                                                ^
+/tmp/tmpocwzdarm/dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4.cpp: In member function ‘virtual double dolfin::dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4::get_property(std::__cxx11::string) const’:
+/tmp/tmpocwzdarm/dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4.cpp:77:11: warning: this ‘if’ clause does not guard... [-Wmisleading-indentation]
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "mu_l_nd") return mu_l_nd;          if (name == "mu_r_nd") return mu_r_nd;
+           ^~
+/tmp/tmpocwzdarm/dolfin_expression_79b26efcf0cde85fadb91c22d399f2f4.cpp:77:47: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+           if (name == "l") return l;          if (name == "w") return w;          if (name == "mu_l_nd") return mu_l_nd;          if (name == "mu_r_nd") return mu_r_nd;
+                                               ^~
