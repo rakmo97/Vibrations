@@ -75,9 +75,9 @@ V = VectorFunctionSpace(mesh,'P',1)
 boundary_left = 'near(x[0],0)'
 bc_left = DirichletBC(V,Constant((0,0,0)),boundary_left)
 
-mu_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? mu_l_nd:mu_r_nd',w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? lambda_l_nd:lambda_r_nd',w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? 1.0:rho_r/rho_l',w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
+mu_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? mu_l_nd:mu_r_nd',w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? lambda_l_nd:lambda_r_nd',w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? 1.0:rho_r/rho_l',w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 
 tol = 1E-14
 
@@ -143,7 +143,7 @@ for i in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
 	solve(a == L, u, bc_left)
-	u_grab[i] = u(l_nd,w_nd/2,h_nd/2)[1]
+	u_grab[i] = u(l_nd,w_nd/2,h_nd/2)[1] * W
 
 	# if(abs(t-index)<0.01):
 	# 	print("Writing output files...")

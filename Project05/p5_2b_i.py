@@ -1,5 +1,5 @@
 """
-Python script for Part 2b of Project 5
+Python script for Part 2b_i of Project 5
 
 Author:				Omkar Mulekar
 Due Date:			April 24, 2019
