@@ -1,5 +1,5 @@
 """
-Python script for Part 1b of Project 5
+Python script for Part 2b of Project 5
 
 Author:				Omkar Mulekar
 Due Date:			April 24, 2019
@@ -21,9 +21,9 @@ import csv
 #==============================================================
 #	Dimensional parameters
 #==============================================================
-length = 3.0
-W = 0.1
-H = 0.1
+length = 1
+W = 1
+H = 0.01
 
 E_l = 200e9
 nu_l = 0.3
@@ -68,16 +68,42 @@ lambda_r_nd = lambda_r/youngs
 traction_nd = traction_applied/youngs
 
 #============================================================
-mesh = BoxMesh(Point(0,0,0),Point(l_nd,w_nd,h_nd),20,6,6)
+mesh = BoxMesh(Point(0,0,0),Point(l_nd,w_nd,h_nd),20,20,3)
 S = FunctionSpace(mesh,'P',1)
 V = VectorFunctionSpace(mesh,'P',1)
 
-boundary_left = 'near(x[0],0)'
-bc_left = DirichletBC(V,Constant((0,0,0)),boundary_left)
+# boundary_left = 'near(x[0],0)'
+# bc_left = DirichletBC(V,Constant((0,0,0)),boundary_left)
 
-mu_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? mu_l_nd:mu_r_nd',w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? lambda_l_nd:lambda_r_nd',w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('x[1]>0 && x[1]<(1/5)*w && x[1]>(4/5)*w && x[1]<w ? 1.0:rho_r/rho_l',w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
+# boundary_right = 'near(x[0],l_nd)'
+# bc_right = DirichletBC(V,Constant((0,0,0)),boundary_right)
+
+# boundary_front = 'near(x[1],0)'
+# bc_front = DirichletBC(V,Constant((0,0,0)),boundary_front)
+
+# boundary_back = 'near(x[1],w_nd)'
+# bc_back = DirichletBC(V,Constant((0,0,0)),boundary_back)
+
+def boundary_left(x,on_boundary):
+	return (on_boundary and near(x[0],0,tol))
+
+def boundary_right(x,on_boundary):
+	return on_boundary and near(x[0],l_nd,tol)
+
+def boundary_front(x,on_boundary):
+	return on_boundary and near(x[1],0,tol)
+
+def boundary_back(x,on_boundary):
+	return on_boundary and near(x[1],w_nd,tol)
+
+bc_left = DirichletBC(V,Constant((0,0,0)),boundary_left)
+bc_right = DirichletBC(V,Constant((0,0,0)),boundary_right)
+bc_front = DirichletBC(V,Constant((0,0,0)),boundary_front)
+bc_back = DirichletBC(V,Constant((0,0,0)),boundary_back)
+
+mu_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? mu_l_nd:mu_r_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? lambda_l_nd:lambda_r_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? 1.0:rho_r/rho_l',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 
 tol = 1E-14
 
@@ -96,13 +122,13 @@ u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
 f = Constant((0.0,0.0,0.0))
-T_init = Expression(('0.0', 'near(x[0],l)? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, A=traction_nd)
+T_init = Expression(('0.0', 'x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
 F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 a_init, L_init = lhs(F_init), rhs(F_init)
 
 print("First solving the initial cantelever problem")
 u_init = Function(V)
-solve(a_init==L_init,u_init,bc_left)
+solve(a_init==L_init,u_init,[bc_left,bc_right,bc_front,bc_back])
 
 #============================================================
 # Next we use this as initial condition, let the force go and 
@@ -137,13 +163,21 @@ stress_proj = Function(Q)
 
 index = 0
 time = [0] * num_steps
-u_grab = [0] * num_steps
+u_grab1 = [0] * num_steps
+u_grab2 = [0] * num_steps
+u_grab3 = [0] * num_steps
+u_grab4 = [0] * num_steps
+u_grab5 = [0] * num_steps
 
 for i in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
-	solve(a == L, u, bc_left)
-	u_grab[i] = u(l_nd,w_nd/2,h_nd/2)[1]
+	solve(a == L, u, [bc_left,bc_right,bc_front,bc_back])
+	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[1]
+	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[1]
+	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[1]
+	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[1]
+	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[1]
 
 	# if(abs(t-index)<0.01):
 	# 	print("Writing output files...")
@@ -157,10 +191,14 @@ for i in range(num_steps):
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
-np.savetxt('results_1/p1b_u.txt', np.c_[time,u_grab])
+# np.savetxt('results_2/p2b_u.txt', np.c_[time,u_grab])
 plt.figure(1)
-plt.plot(time,u_grab,label='(L,W/2,H/2)')
+plt.plot(time,u_grab1,label='(L/2,W/2,H)')
+plt.plot(time,u_grab2,label='(L/4,W/2,H)')
+plt.plot(time,u_grab3,label='(3L/4,W/2,H)')
+plt.plot(time,u_grab4,label='(L/2,W/4,H)')
+plt.plot(time,u_grab5,label='(L/2,3W/2,H)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
-plt.savefig('results_1/1b_disps.png',bbox_inches='tight')
+plt.savefig('results_2/2b_ii_disps.png',bbox_inches='tight')

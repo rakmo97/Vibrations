@@ -68,7 +68,7 @@ lambda_r_nd = lambda_r/youngs
 traction_nd = traction_applied/youngs
 
 #============================================================
-mesh = BoxMesh(Point(0,0,0),Point(l_nd,w_nd,h_nd),40,12,12)
+mesh = BoxMesh(Point(0,0,0),Point(l_nd,w_nd,h_nd),20,6,6)
 S = FunctionSpace(mesh,'P',1)
 V = VectorFunctionSpace(mesh,'P',1)
 
@@ -96,7 +96,7 @@ u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
 f = Constant((0.0,0.0,0.0))
-T_init = Expression(('0.0', 'x[0] >= 0.8*l && x[0] <= l && near(x[1],w)? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, A=traction_nd)
+T_init = Expression(('0.0', 'near(x[0],l)? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, A=traction_nd)
 F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 a_init, L_init = lhs(F_init), rhs(F_init)
 
@@ -157,10 +157,10 @@ for i in range(num_steps):
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
-np.savetxt('p1a_u.txt', np.c_[time,u_grab])
+np.savetxt('results_1/p1a_u.txt', np.c_[time,u_grab])
 plt.figure(1)
 plt.plot(time,u_grab,label='(L,W/2,H/2)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
-plt.savefig('results_a/1a_i_disps.png',bbox_inches='tight')
+plt.savefig('results_1/1a_disps.png',bbox_inches='tight')
