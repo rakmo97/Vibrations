@@ -1,5 +1,5 @@
 """
-Python script for Part 2b_ii of Project 5
+Python script for Part 2a of Project 5
 
 Author:				Omkar Mulekar
 Due Date:			April 24, 2019
@@ -101,9 +101,9 @@ bc_right = DirichletBC(V,Constant((0,0,0)),boundary_right)
 bc_front = DirichletBC(V,Constant((0,0,0)),boundary_front)
 bc_back = DirichletBC(V,Constant((0,0,0)),boundary_back)
 
-mu_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? mu_l_nd:mu_r_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? lambda_l_nd:lambda_r_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('x[0]<0.3*l && x[0]>0.6*l && x[1]<0.3*w && x[1]>0.6*w ? 1.0:rho_r/rho_l',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
+mu_nd = interpolate(Expression('x[0]>0.3*l && x[0]<0.6*l && x[1]>0.3*w && x[1]<0.6*w ? mu_r_nd:mu_l_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('x[0]>0.3*l && x[0]<0.6*l && x[1]>0.3*w && x[1]<0.6*w ? lambda_r_nd:lambda_l_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('x[0]>0.3*l && x[0]<0.6*l && x[1]>0.3*w && x[1]<0.6*w ? rho_r/rho_l:1.0',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 
 tol = 1E-14
 
@@ -122,7 +122,7 @@ u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
 f = Constant((0.0,0.0,0.0))
-T_init = Expression(('0.0', 'x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
+T_init = Expression(('0.0','0.0','x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
 F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 a_init, L_init = lhs(F_init), rhs(F_init)
 
@@ -173,11 +173,11 @@ for i in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
 	solve(a == L, u, [bc_left,bc_right,bc_front,bc_back])
-	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[1]
-	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[1]
-	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[1]
-	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[1]
-	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[1]
+	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[2]
+	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[2]
+	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[2]
+	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[2]
+	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[2]
 
 	# if(abs(t-index)<0.01):
 	# 	print("Writing output files...")
@@ -191,7 +191,7 @@ for i in range(num_steps):
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
-# np.savetxt('results_2/p2b_u.txt', np.c_[time,u_grab])
+# np.savetxt('results_2/p2a_u.txt', np.c_[time,u_grab])
 plt.figure(1)
 plt.plot(time,u_grab1,label='(L/2,W/2,H)')
 plt.plot(time,u_grab2,label='(L/4,W/2,H)')
@@ -201,4 +201,4 @@ plt.plot(time,u_grab5,label='(L/2,3W/2,H)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
-plt.savefig('results_2/2b_ii_disps.png',bbox_inches='tight')
+plt.savefig('results_2/2a_disps.png',bbox_inches='tight')

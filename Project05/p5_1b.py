@@ -75,10 +75,9 @@ V = VectorFunctionSpace(mesh,'P',1)
 boundary_left = 'near(x[0],0)'
 bc_left = DirichletBC(V,Constant((0,0,0)),boundary_left)
 
-mu_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? mu_l_nd:mu_r_nd',w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? lambda_l_nd:lambda_r_nd',w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('(x[1]>0 && x[1]<(1/5)*w) || (x[1]>(4/5)*w && x[1]<w) ? 1.0:rho_r/rho_l',w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
-
+mu_nd = interpolate(Expression('x[1]<(4/5)*w && x[1]>(1/5)*w ? mu_r_nd:mu_l_nd',w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('x[1]<(4/5)*w && x[1]>(1/5)*w ? lambda_r_nd:lambda_l_nd',w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('x[1]<(4/5)*w && x[1]>(1/5)*w ? rho_r/rho_l:1.0',w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 tol = 1E-14
 
 #============================================================

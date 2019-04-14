@@ -101,9 +101,9 @@ bc_right = DirichletBC(V,Constant((0,0,0)),boundary_right)
 bc_front = DirichletBC(V,Constant((0,0,0)),boundary_front)
 bc_back = DirichletBC(V,Constant((0,0,0)),boundary_back)
 
-mu_nd = interpolate(Expression('x[0]<0.4*l && x[0]>0.6*l && x[1]<0.4*w && x[1]>0.6*w ? mu_l_nd:mu_r_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('x[0]<0.4*l && x[0]>0.6*l && x[1]<0.4*w && x[1]>0.6*w ? lambda_l_nd:lambda_r_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('x[0]<0.4*l && x[0]>0.6*l && x[1]<0.4*w && x[1]>0.6*w ? 1.0:rho_r/rho_l',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
+mu_nd = interpolate(Expression('x[0]>0.4*l && x[0]<0.6*l && x[1]>0.4*w && x[1]<0.6*w ? mu_r_nd:mu_l_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('x[0]>0.4*l && x[0]<0.6*l && x[1]>0.4*w && x[1]<0.6*w ? lambda_r_nd:lambda_l_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('x[0]>0.4*l && x[0]<0.6*l && x[1]>0.4*w && x[1]<0.6*w ? rho_r/rho_l:1.0',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 
 tol = 1E-14
 
@@ -122,7 +122,7 @@ u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
 f = Constant((0.0,0.0,0.0))
-T_init = Expression(('0.0', 'x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
+T_init = Expression(('0.0','0.0','x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
 F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 a_init, L_init = lhs(F_init), rhs(F_init)
 
