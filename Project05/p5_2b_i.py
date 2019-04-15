@@ -1,5 +1,5 @@
 """
-Python script for Part 2b of Project 5
+Python script for Part 2b.i of Project 5
 
 Author:				Omkar Mulekar
 Due Date:			April 24, 2019
@@ -47,15 +47,15 @@ traction_applied = -1e5
 youngs = (mu_l*(3.0*lambda_l+2.0*mu_l))/(lambda_l+mu_l)
 bar_speed = math.sqrt(youngs/rho_l)
 
-l_nd = length/W
-w_nd = W/W
-h_nd = H/W
+l_nd = length/H
+w_nd = W/H
+h_nd = H/H
 
-t_char = W/bar_speed
+t_char = H/bar_speed
 t = 0
 t_i = 0.5
 dt = 1
-num_steps = 31000
+num_steps = 13000
 
 mu_l_nd = mu_l/youngs
 lambda_l_nd = lambda_l/youngs
@@ -101,9 +101,9 @@ bc_right = DirichletBC(V,Constant((0,0,0)),boundary_right)
 bc_front = DirichletBC(V,Constant((0,0,0)),boundary_front)
 bc_back = DirichletBC(V,Constant((0,0,0)),boundary_back)
 
-mu_nd = interpolate(Expression('x[0]<0.35*l && x[0]>0.55*l && x[1]<0.4*w && x[1]>0.55*w ? mu_l_nd:mu_r_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
-lambda_nd = interpolate(Expression('x[0]<0.35*l && x[0]>0.55*l && x[1]<0.4*w && x[1]>0.55*w ? lambda_l_nd:lambda_r_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
-rho_nd = interpolate(Expression('x[0]<0.35*l && x[0]>0.55*l && x[1]<0.4*w && x[1]>0.55*w ? 1.0:rho_r/rho_l',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
+mu_nd = interpolate(Expression('x[0]>0.35*l && x[0]<0.55*l && x[1]>0.35*w && x[1]<0.55*w ? mu_r_nd:mu_l_nd',l=l_nd,w=w_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1),S)
+lambda_nd = interpolate(Expression('x[0]>0.35*l && x[0]<0.55*l && x[1]>0.35*w && x[1]<0.55*w ? lambda_r_nd:lambda_l_nd',l=l_nd,w=w_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1),S)
+rho_nd = interpolate(Expression('x[0]>0.35*l && x[0]<0.55*l && x[1]>0.35*w && x[1]<0.55*w ? rho_r/rho_l:1.0',l=l_nd,w=w_nd,rho_l=rho_l,rho_r=rho_r,degree=1),S)
 
 tol = 1E-14
 
@@ -122,7 +122,7 @@ u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
 f = Constant((0.0,0.0,0.0))
-T_init = Expression(('0.0', 'x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0' ,'0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
+T_init = Expression(('0.0','0.0','x[0]>0.48*l && x[0]<0.51*l && x[1]>0.49*w && x[1]<0.51*w && near(x[2],h) ? A : 0.0'), degree=1, l=l_nd, w=w_nd, h=h_nd, A=traction_nd)
 F_init = inner(sigma(u_init),epsilon(v))*dx - dot(f,v)*dx - dot(T_init,v)*ds
 a_init, L_init = lhs(F_init), rhs(F_init)
 
@@ -173,11 +173,11 @@ for i in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
 	solve(a == L, u, [bc_left,bc_right,bc_front,bc_back])
-	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[1]
-	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[1]
-	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[1]
-	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[1]
-	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[1]
+	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[2] * H
+	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[2] * H
+	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[2] * H
+	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[2] * H
+	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[2] * H
 
 	# if(abs(t-index)<0.01):
 	# 	print("Writing output files...")
@@ -191,7 +191,7 @@ for i in range(num_steps):
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
-# np.savetxt('results_2/p2b_i_u.txt', np.c_[time,u_grab])
+# np.savetxt('results_2/p2a_u.txt', np.c_[time,u_grab])
 plt.figure(1)
 plt.plot(time,u_grab1,label='(L/2,W/2,H)')
 plt.plot(time,u_grab2,label='(L/4,W/2,H)')
