@@ -1,5 +1,5 @@
 """
-Python script for Part 2a of Project 5
+Python script for Part 2b.i of Project 5
 
 Author:				Omkar Mulekar
 Due Date:			April 24, 2019
@@ -47,15 +47,15 @@ traction_applied = -1e5
 youngs = (mu_l*(3.0*lambda_l+2.0*mu_l))/(lambda_l+mu_l)
 bar_speed = math.sqrt(youngs/rho_l)
 
-l_nd = length/W
-w_nd = W/W
-h_nd = H/W
+l_nd = length/H
+w_nd = W/H
+h_nd = H/H
 
-t_char = W/bar_speed
+t_char = H/bar_speed
 t = 0
 t_i = 0.5
 dt = 1
-num_steps = 31000
+num_steps = 13000
 
 mu_l_nd = mu_l/youngs
 lambda_l_nd = lambda_l/youngs
@@ -173,11 +173,11 @@ for i in range(num_steps):
 	print("time = %.2f" % t)
 	T_n.t = t
 	solve(a == L, u, [bc_left,bc_right,bc_front,bc_back])
-	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[1]
-	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[1]
-	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[1]
-	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[1]
-	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[1]
+	u_grab1[i] = u(l_nd/2,w_nd/2,h_nd)[2] * H
+	u_grab2[i] = u(l_nd/4,w_nd/2,h_nd)[2] * H
+	u_grab3[i] = u(3*l_nd/4,w_nd/2,h_nd)[2] * H
+	u_grab4[i] = u(l_nd/2,w_nd/4,h_nd)[2] * H
+	u_grab5[i] = u(l_nd/2,3*w_nd/4,h_nd)[2] * H
 
 	# if(abs(t-index)<0.01):
 	# 	print("Writing output files...")
@@ -201,4 +201,4 @@ plt.plot(time,u_grab5,label='(L/2,3W/2,H)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
-plt.savefig('results_2/2a_disps.png',bbox_inches='tight')
+plt.savefig('results_2/2b_i_disps.png',bbox_inches='tight')
