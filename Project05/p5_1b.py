@@ -15,12 +15,8 @@ from ufl import nabla_div
 import math
 import numpy as np
 from scipy.signal import argrelextrema
-from scipy.signal import savgol_filter
-import csv
 
-#==============================================================
-#	Dimensional parameters
-#==============================================================
+# Parameters
 length = 3.0
 W = 0.1
 H = 0.1
@@ -41,9 +37,6 @@ lambda_r = (nu_r*E_r)/((1+nu_r)*(1-2*nu_r))
 traction_applied = -1e5
 
 
-#==============================================================
-#	Dimensionless parameters
-#==============================================================
 youngs = (mu_l*(3.0*lambda_l+2.0*mu_l))/(lambda_l+mu_l)
 bar_speed = math.sqrt(youngs/rho_l)
 
@@ -62,8 +55,6 @@ lambda_l_nd = lambda_l/youngs
 mu_r_nd = mu_r/youngs
 lambda_r_nd = lambda_r/youngs
 
-#mu_nd = Expression('x[0]<=l_nd ? mu_l_nd:mu_r_nd',l_nd=l_nd,mu_l_nd=mu_l_nd,mu_r_nd=mu_r_nd,degree=1)
-#lambda_nd = Expression('x[0]<=l_nd ? lambda_l_nd:lambda_r_nd',l_nd=l_nd,lambda_l_nd=lambda_l_nd,lambda_r_nd=lambda_r_nd,degree=1)
 
 traction_nd = traction_applied/youngs
 
@@ -88,9 +79,6 @@ def sigma(u):
 	return lambda_nd*nabla_div(u)*Identity(d) + mu_nd*(epsilon(u) + epsilon(u).T)
 
 #============================================================
-# First we solve the problem of a cantelever beam under fixed
-# load. 
-#============================================================
 u_init = TrialFunction(V)
 d = u_init.geometric_dimension()
 v = TestFunction(V)
@@ -104,15 +92,11 @@ u_init = Function(V)
 solve(a_init==L_init,u_init,bc_left)
 
 #============================================================
-# Next we use this as initial condition, let the force go and 
-# study the vertical vibrations of the beam
-#============================================================
 u_n = interpolate(Constant((0.0,0.0,0.0)),V)
 u_n_1 = interpolate(Constant((0.0,0.0,0.0)),V)
 u_n.assign(u_init)
 u_n_1.assign(u_init)
 
-#T_n = Expression(('near(x[0],l) ? (t <= t_i ? A : 0.0) : 0.0','0.0','0.0'), degree=1, l=l_nd, A=traction_nd, t=t, t_i=t_i)
 T_n = Constant((0.0,0.0,0.0))
 
 u = TrialFunction(V)
@@ -126,9 +110,6 @@ F = (dt*dt/rho_nd)*inner(sigma(u),epsilon(v))*dx \
 	- 2.0*dot(u_n,v)*dx \
 	+ dot(u_n_1,v)*dx
 a,L = lhs(F), rhs(F)
-
-# xdmffile_u = XDMFFile('results/solution.xdmf')
-# xdmffile_s = XDMFFile('results/stress.xdmf')
 
 u = Function(V)
 Q = TensorFunctionSpace(mesh, "Lagrange", 1)
@@ -144,28 +125,23 @@ for i in range(num_steps):
 	solve(a == L, u, bc_left)
 	u_grab[i] = u(l_nd,w_nd/2,h_nd/2)[1] * W
 
-	# if(abs(t-index)<0.01):
-	# 	print("Writing output files...")
-	# 	xdmffile_u.write(u*length,t)
-	# 	stress =  sigma(u)
-	# 	stress_proj.vector()[:] = project(stress,Q).vector()
-	# 	xdmffile_s.write(stress_proj,t)
-	# 	index += 1
 	time[i] = t
 	t+=dt
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
+# Plotting
 plt.figure(1)
 plt.plot(time,u_grab,label='(L,W/2,H/2)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
-plt.savefig('results_1/1b_disps.png',bbox_inches='tight')
+plt.savefig('1b_disps.png',bbox_inches='tight')
 
+# Grabbing Natrural Frequency
 u_np = np.array(u_grab)
 min_args = argrelextrema(u_np,np.greater)
 period = (time[min_args[0][1]] - time[min_args[0][0]])
 nat_freq = 2*math.pi /period
 print("Natural Frequency: ",nat_freq," rad/s")
-np.savetxt('results_1/natfreq_1b.txt', np.c_[nat_freq])
+np.savetxt('natfreq_1b.txt', np.c_[nat_freq])
