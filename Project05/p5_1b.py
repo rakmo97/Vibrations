@@ -156,10 +156,16 @@ for i in range(num_steps):
 	u_n_1.assign(u_n)
 	u_n.assign(u)
 
-np.savetxt('results_1/p1b_u.txt', np.c_[time,u_grab])
 plt.figure(1)
 plt.plot(time,u_grab,label='(L,W/2,H/2)')
 plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
 plt.savefig('results_1/1b_disps.png',bbox_inches='tight')
+
+u_np = np.array(u_grab)
+min_args = argrelextrema(u_np,np.greater)
+period = (time[min_args[0][1]] - time[min_args[0][0]])
+nat_freq = 2*math.pi /period
+print("Natural Frequency: ",nat_freq," rad/s")
+np.savetxt('results_1/natfreq_1b.txt', np.c_[nat_freq])

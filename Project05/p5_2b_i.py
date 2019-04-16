@@ -202,3 +202,10 @@ plt.xlabel('Time [s]')
 plt.ylabel('Vertical Deflection [m]')
 plt.legend(loc='best')
 plt.savefig('results_2/2b_i_disps.png',bbox_inches='tight')
+
+u_np = np.array(u_grab1)
+min_args = argrelextrema(u_np,np.greater)
+period = (time[min_args[0][1]] - time[min_args[0][0]])
+nat_freq = 2*math.pi /period
+print("Natural Frequency: ",nat_freq," rad/s")
+np.savetxt('results_2/natfreq_2b_i.txt', np.c_[nat_freq])
